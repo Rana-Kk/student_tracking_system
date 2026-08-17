@@ -1,0 +1,260 @@
+@startuml lexicon-erd
+title Lexicon Learning Analytics & AI Feedback Platform - ER Diagram
+
+hide methods
+hide stereotypes
+skinparam linetype ortho
+skinparam backgroundColor transparent
+
+entity users {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR
+  email : VARCHAR <<UK>>
+  password_hash : VARCHAR
+  role : ENUM
+  is_active : BOOLEAN
+}
+
+entity courses {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR
+  description : TEXT
+  start_date : DATE
+  end_date : DATE
+}
+
+entity groups {
+  * id : BIGINT <<PK>>
+  --
+  course_id : BIGINT <<FK>>
+  name : VARCHAR
+  start_date : DATE
+  end_date : DATE
+}
+
+entity group_teachers {
+  * group_id : BIGINT <<PK,FK>>
+  * teacher_id : BIGINT <<PK,FK>>
+}
+
+entity group_students {
+  * group_id : BIGINT <<PK,FK>>
+  * student_id : BIGINT <<PK,FK>>
+  --
+  joined_at : DATE
+}
+
+entity teams {
+  * id : BIGINT <<PK>>
+  --
+  group_id : BIGINT <<FK>>
+  name : VARCHAR
+}
+
+entity team_members {
+  * team_id : BIGINT <<PK,FK>>
+  * student_id : BIGINT <<PK,FK>>
+  --
+  joined_at : DATE
+}
+
+entity attendance {
+  * id : BIGINT <<PK>>
+  --
+  student_id : BIGINT <<FK>>
+  group_id : BIGINT <<FK>>
+  attendance_date : DATE
+  session : ENUM
+  status : ENUM
+  note : TEXT
+  recorded_by : BIGINT <<FK>>
+}
+
+entity assessments {
+  * id : BIGINT <<PK>>
+  --
+  group_id : BIGINT <<FK>>
+  title : VARCHAR
+  description : TEXT
+  type : ENUM
+  submission_mode : ENUM
+  assessment_date : DATE
+  due_date : DATE
+  max_score : DECIMAL
+  created_by : BIGINT <<FK>>
+}
+
+entity assessment_criteria {
+  * id : BIGINT <<PK>>
+  --
+  assessment_id : BIGINT <<FK>>
+  name : VARCHAR
+  description : TEXT
+  max_score : DECIMAL
+  sort_order : INT
+}
+
+entity assessment_submissions {
+  * id : BIGINT <<PK>>
+  --
+  assessment_id : BIGINT <<FK>>
+  student_id : BIGINT <<FK, nullable>>
+  team_id : BIGINT <<FK, nullable>>
+  github_url : TEXT
+  submitted_at : TIMESTAMP
+  status : ENUM
+}
+
+entity assessment_scores {
+  * id : BIGINT <<PK>>
+  --
+  assessment_id : BIGINT <<FK>>
+  student_id : BIGINT <<FK>>
+  score : DECIMAL
+  feedback : TEXT
+  evaluated_at : TIMESTAMP
+}
+
+entity criterion_scores {
+  * id : BIGINT <<PK>>
+  --
+  assessment_score_id : BIGINT <<FK>>
+  criterion_id : BIGINT <<FK>>
+  score : DECIMAL
+  ai_recommended_score : DECIMAL
+  ai_rationale : TEXT
+  teacher_override_score : DECIMAL
+}
+
+entity ai_evaluations {
+  * id : BIGINT <<PK>>
+  --
+  submission_id : BIGINT <<FK>>
+  generated_by : BIGINT <<FK>>
+  reviewed_by : BIGINT <<FK>>
+  content : TEXT
+  status : ENUM
+  teacher_comment : TEXT
+  created_at : TIMESTAMP
+  reviewed_at : TIMESTAMP
+}
+
+entity quizzes {
+  * id : BIGINT <<PK>>
+  --
+  group_id : BIGINT <<FK>>
+  title : VARCHAR
+  topic : VARCHAR
+  quiz_date : DATE
+  max_score : DECIMAL
+  source : ENUM
+  created_by : BIGINT <<FK>>
+}
+
+entity quiz_imports {
+  * id : BIGINT <<PK>>
+  --
+  quiz_id : BIGINT <<FK, nullable>>
+  file_name : VARCHAR
+  imported_by : BIGINT <<FK>>
+  status : ENUM
+  created_at : TIMESTAMP
+}
+
+entity quiz_results {
+  * id : BIGINT <<PK>>
+  --
+  quiz_id : BIGINT <<FK>>
+  student_id : BIGINT <<FK>>
+  score : DECIMAL
+  completed_at : TIMESTAMP
+}
+
+entity competencies {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR <<UK>>
+  description : TEXT
+}
+
+entity student_competencies {
+  * id : BIGINT <<PK>>
+  --
+  student_id : BIGINT <<FK>>
+  competency_id : BIGINT <<FK>>
+  score : DECIMAL
+  updated_at : TIMESTAMP
+}
+
+entity teacher_feedback {
+  * id : BIGINT <<PK>>
+  --
+  student_id : BIGINT <<FK>>
+  teacher_id : BIGINT <<FK>>
+  assessment_id : BIGINT <<FK, nullable>>
+  content : TEXT
+  created_at : TIMESTAMP
+}
+
+entity certificates {
+  * id : BIGINT <<PK>>
+  --
+  student_id : BIGINT <<FK>>
+  name : VARCHAR
+  issuing_organization : VARCHAR
+  issue_date : DATE
+  expiry_date : DATE
+  certificate_code : VARCHAR
+  file_url : TEXT
+  created_at : TIMESTAMP
+}
+
+courses ||--o{ groups
+groups ||--o{ group_teachers
+users ||--o{ group_teachers
+groups ||--o{ group_students
+users ||--o{ group_students
+
+groups ||--o{ teams
+teams ||--o{ team_members
+users ||--o{ team_members
+
+groups ||--o{ attendance
+users ||--o{ attendance : student
+users ||--o{ attendance : recorded_by
+
+groups ||--o{ assessments
+users ||--o{ assessments : created_by
+assessments ||--o{ assessment_criteria
+assessments ||--o{ assessment_submissions
+users ||--o{ assessment_submissions : student
+teams ||--o{ assessment_submissions : team
+
+assessments ||--o{ assessment_scores
+users ||--o{ assessment_scores : student
+assessment_scores ||--o{ criterion_scores
+assessment_criteria ||--o{ criterion_scores
+
+assessment_submissions ||--o{ ai_evaluations
+users ||--o{ ai_evaluations : generated_by
+users ||--o{ ai_evaluations : reviewed_by
+
+groups ||--o{ quizzes
+users ||--o{ quizzes : created_by
+quizzes ||--o{ quiz_imports
+users ||--o{ quiz_imports : imported_by
+quizzes ||--o{ quiz_results
+users ||--o{ quiz_results : student
+
+users ||--o{ student_competencies
+competencies ||--o{ student_competencies
+
+users ||--o{ teacher_feedback : student
+users ||--o{ teacher_feedback : teacher
+assessments o|--o{ teacher_feedback
+
+users ||--o{ certificates : student
+
+@enduml
