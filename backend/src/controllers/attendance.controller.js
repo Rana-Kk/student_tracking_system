@@ -368,7 +368,6 @@ export const getPendingAttendanceAppeals = asyncHandler(async (req, res) => {
 });
 // PUT /api/attendance/appeals/:id/review (Admin or Teacher)
 // body: { status: 'accepted' | 'rejected' }
-// accepted -> ilgili yoklama kaydı 'present' yapılır (öğrenci aslında derste var sayılır)
 export const reviewAttendanceAppeal = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;

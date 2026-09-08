@@ -163,8 +163,6 @@ function formatCriterionValue(
   // ============================================================
   // SCORE
   //
-  // Teacher score varsa onu göster
-  // Yoksa AI score göster
   // ============================================================
 
   if (
@@ -190,8 +188,6 @@ function formatCriterionValue(
   // ============================================================
   // TEXT
   //
-  // Teacher text varsa onu göster
-  // Yoksa AI text göster
   // ============================================================
 
   if (

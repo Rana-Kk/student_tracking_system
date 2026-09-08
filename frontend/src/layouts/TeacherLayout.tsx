@@ -51,14 +51,12 @@ useEffect(() => {
 
       const subs = res.data || []
 
-      // Öğretmenin incelemesi gereken submission'lar
       const pendingSubs = subs.filter((s: any) =>
         ['submitted', 'analyzing'].includes(
           String(s.status).toLowerCase()
         )
       ).length
 
-      // AI değerlendirmesi hazır ve teacher review bekliyor
       const pendingEvals = subs.filter((s: any) =>
         ['ai_reviewed', 'teacher_review'].includes(
           String(s.status).toLowerCase()

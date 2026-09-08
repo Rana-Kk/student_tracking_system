@@ -12,7 +12,6 @@ export default function errorHandler(err, req, res, next) {
     return res.status(409).json({ error: 'A record with this value already exists' })
   }
 
-  // Geliştirme sırasında gerçek DB hatasını (FK/CHECK/tip vs.) net görmek için:
   console.error('[DB/UNHANDLED ERROR]', {
     message: err.message,
     code: err.code,      // örn. ER_NO_REFERENCED_ROW_2, ER_CHECK_CONSTRAINT_VIOLATED

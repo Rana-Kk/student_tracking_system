@@ -69,7 +69,6 @@ export const getAllGroups = asyncHandler(async (req, res) => {
 
   const params = []
 
-  // Student sadece kendi gruplarını görebilir
   if (req.user.role === 'student') {
     query += `
       AND EXISTS (

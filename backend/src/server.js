@@ -19,7 +19,6 @@ async function start() {
   app.listen(PORT, () => {
     console.log(`API listening on http://localhost:${PORT}`)
     
-    // Sunucu sorunsuz ayağa kalktıktan sonra arka planda GitHub taramasını başlatıyoruz
     startGithubPolling();
   })
 }

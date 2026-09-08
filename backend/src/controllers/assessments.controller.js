@@ -197,7 +197,6 @@ data: assessments
 
 // ============================================================
 // GET /api/assessments/student
-// Student'ın kendi assessment'ları
 // ============================================================
 
 export const getStudentAssessments = asyncHandler(async (req, res) => {
@@ -399,7 +398,6 @@ export const getAssessmentReport = asyncHandler(async (req, res) => {
 
   const assessment = assessmentRows[0]
 
-  // Teacher sadece kendi grubunun assessment'ını görebilsin
   if (
     req.user.role === 'teacher' &&
     !(await teacherOwnsGroup(req.user.sub, assessment.group_id))
@@ -530,7 +528,6 @@ const totalStudents = Number(
   }
 
   scores.forEach((score) => {
-    // score'u max_score üzerinden yüzdeye çeviriyoruz
     const percentage =
       assessment.max_score > 0
         ? (score / assessment.max_score) * 100

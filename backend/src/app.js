@@ -26,7 +26,6 @@ app.use(cors());
 app.use(express.json());
 
 
-// API Uçları
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', coursesRoutes);
 app.use('/api/groups', groupsRoutes);
@@ -44,7 +43,6 @@ app.use('/api/teams', teamsRoutes);
 app.use('/api/criteria-templates', criteriaTemplatesRoutes);
 app.use('/api/student-checklists', studentChecklistRoutes);
 
-// Hata Yakalayıcı (En altta kalmalı)
 app.use(errorHandler);
 
 export { app };

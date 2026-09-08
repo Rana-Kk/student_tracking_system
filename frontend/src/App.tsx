@@ -66,8 +66,6 @@ function AdminShell({ user, onLogout, onUpdateUser }: { user: User; onLogout: ()
 function TeacherShell({ user, onLogout, onUpdateUser }: { user: User; onLogout: () => void; onUpdateUser: (u: User) => void }) {
   const [page, setPage] = useState<TeacherPage>('dashboard')
   const [showProfile, setShowProfile] = useState(false)
-  // Assessments / Submissions listelerinden bir öğrenci satırına tıklandığında
-  // hangi submission'ın AI Evaluations sayfasında önceden seçili geleceğini tutar.
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<number | undefined>()
 
   const nav = (p: TeacherPage, submissionId?: number) => {
